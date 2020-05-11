@@ -1,6 +1,6 @@
 
 
-
+[TOC]
 
 # HTML - HyperText Markup Language
 
@@ -684,6 +684,53 @@ accept multiple
     good  绿色
      -    黄色
     bad   红色
+
+```
+
+## Sending Form Data
+
+```html
+# form [action method]
+action: url
+method: GET、POST..
+
+# 此外，GET是一个幂等操作idempotent
+# 幂等idempotent: 多次操作（参数相同）不会造成额外影响; 返回值不一定相同; 比如删除操作, abs()
+# 对于HTTP Method有: safe操作GET/HEAD/OPTIONS, 非safe的PUT/DELETE
+
+# GET
+	没有body(empty), 数据追加到url
+	数据长度受限
+	不安全，不适合敏感数据
+GET /?say=Hi&to=Mom HTTP/1.1
+Host: www.foo.com
+
+# POST
+	数据追加到body
+POST / HTTP/2.0
+Host: foo.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 13
+
+say=Hi&to=Mom
+
+# 发送文件POST
+enctype
+	application/x-www-form-urlencoded      # default
+	multipart/form-data			          # file
+	text/plain					     	 # html5 debugging
+<form method="post" enctype="multipart/form-data"></form>
+
+# 安全问题 来源于Server端数据处理方式, 而不是表单本身
+# Tips: Never trust users, including yourself
+  1. Escape potentially dangerous characters.
+  2. Limit the incoming amount of data to allow only what's necessary
+  3. Sandbox uploaded files. 将文件存放在不同server, 通过子域名或不同域名访问
+XSS		针对用户
+CSRF	针对服务端	CSRF攻击类似于XSS攻击，相同的方式——向Web页面中注入客户端脚本
+SQL注入			            # 针对数据库
+HTTP数据头注入和电子邮件注入     # 会话劫持、网络钓鱼
+
 
 ```
 
