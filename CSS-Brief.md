@@ -97,6 +97,26 @@ background-attachment: fixed;
 ## How CSS Works
 
 ```css
+LOAD HTML -> Parse HTML --->  DOM Tree	-----------------------> Display
+			   ↓               ↑ attach style to nodes
+			LOAD CSS  -----> Parse CSS
+# FLOW
+1.load html
+2.parse html to dom
+3.load resourses (js,img,css..)
+4.parse css. sort rules to `buckets`. work out and attach style to dom-nodes(called a render tree)
+5.The render tree is laid out in the structure it should appear in after rules applied to it.
+6.visual display (painting)
+
+# DOM : has a tree-like structure
+# DOM Node: element, attribute, and piece of text
+
+# CSS会跳过不理解的规则 selector property value..
+# 利用这一特性实现对新旧版本浏览器的同时支持
+.box {
+  width: 500px;				   # 相当于一个fallback
+  width: calc(100% - 50px);		# 浏览器如果不支持就忽略, 支持的浏览器则应用这条
+}
 
 ```
 
