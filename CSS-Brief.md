@@ -120,3 +120,73 @@ LOAD HTML -> Parse HTML --->  DOM Tree	-----------------------> Display
 
 ```
 
+
+
+## Cascade, Specificity and Inheritance
+
+```css
+Cascade: 层叠  具有相同Specificity的规则，应用后面的规则(在Speci之前要看Origin Cascade Order)
+Specificity: 专用性、特定性  最相关原则，相当于优先级(指向同一元素的不同选择器专用性可能不同)
+Inheritance: 继承  有些属性从父元素继承，有些不会(继承属性和非继承属性)
+
+
+#3Factor [DESC]: or 2 [先看Cascade Algorithm -> Specificity Algorithm]
+Importance
+Specificity
+Source order: 相同权重，应用后面的规则
+
+
+#Cascade （algorithm） applied before the specificity algorithm
+# which participate in the cascade:
+1. css-declaration				 # property/value pairs
+2. @ 有declaration			     # @media{}等，也是以declaration参与cascade
+3. @[entities] 没有declaration     # @font-face作为整体参与cascade
+4. @keyframes{}					 # 特例，仍作为整体
+5. @import ; @charset	          # 不受级联算法影响（cascade algorithm)   
+# cascade origin
+1.user-agent stylesheets (browser basic stylesheets)
+    注意区分browser basic stylesheet与browser default stylesheet(用于initial取值)
+    不同的浏览器可能有区别，因此开发常通过一个reset style sheet来得到一个确定的初始状态 
+2.user stylesheets
+3.author stylesheets
+# cascade order [ASC]:
+!important的3个origin顺序刚好相反，mdn中文翻译错了
+    Origin		Importance
+1	user-agent	normal
+2	user		normal
+3	author		normal
+4	animations	@keyframes{}
+5	author		!important
+6	user		!important
+7	user-agent	!important
+8	transitions
+ 
+
+#Specificity (algorithm)
+计算一个选择器的专用性值，累加
+千	内联样式
+百	ID选择器，每个记一个数
+十	类、属性、伪类
+个	元素、伪元素
+
+
+#Inheratance
+1. 继承的传递性
+2. 控制继承
+inherit  强制继承（不管是不是继承属性）
+initial  浏览器默认样式取值。如果browser default stylesheet未设置`且该属性是自然继承的`，则继承
+		    [对于非继承属性，应用默认值]
+		    [对于继承属性，应用的是默认值（优先）或者继承值，可能会较为迷惑]
+unset    自然值，如果属性是自动继承相当于inherit, 否则等于initial
+		    [对于非继承属性，应用默认值]
+		    [对于继承属性，一定是应用继承值，这是与initial的区别]
+revert  具体含义取决于origin
+	User-agent = unset
+	User = Rolls back to the user-agent level
+    Author = Rolls back to the user level 
+    (the Author origin includes the Override and Animation origins.)
+3. all属性利用继承控制值，快速重置所有属性值（实际上不含unicode-bidi & direction）
+
+
+```
+
