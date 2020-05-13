@@ -190,3 +190,54 @@ revert  具体含义取决于origin
 
 ```
 
+
+
+## Selector
+
+```css
+selector list
+# comma分割，有一个选择器不合法，整个列表都失败
+h1,  .cls{}
+
+Types of selectors
+1. Type, class & ID selectors
+    h1{}  .cls{}  #id{}
+1.1 type : aka. tag name selector or element selector
+1.2全局选择器 [asterrisk *]
+可以用universal selector使选择器含义更明确如 
+    article *:firstchild = article :firstchild	# article的第一个子元素
+	!= article:firstchild	# 表示作为其他元素的第一个子元素的article
+1.3 class
+1.3.1 Targeting classes on particular elements
+	span.cls{ }
+1.3.2 Target an element if it has more than one class applied
+	.cls1.cls2{ }	# <div class="cls1 cls2">
+1.4 id, basicly same as class. (只是id似乎不可重复, 另外一个属性似乎也只能有一个id)
+#id
+h1#heading 
+  
+2. Attribute selectors
+    a[title]{}  
+    a[href="#"]{}
+3. Pseudo-class & Pseudo-element
+    a:hover{}
+    p::firstline{}
+4. Combinators
+    article > p {}		# direct child
+    
+
+# Table of selectors
+Type selector			  h1 {  }	
+Universal selector		   * {  }	
+Class selector			  .box {  }	
+id selector				  #unique { }	
+Attribute selector		   a[title] {  }	
+Pseudo-class selectors	 	p:first-child { }	
+Pseudo-element selectors 	p::first-line { }	
+Descendant combinator	    article p	
+Child combinator		    article > p	
+Adjacent sibling combinator	h1 + p	
+General sibling combinator	h1 ~ p
+
+```
+
