@@ -199,33 +199,6 @@ selector list
 # comma分割，有一个选择器不合法，整个列表都失败
 h1,  .cls{}
 
-Types of selectors
-1. Type, class & ID selectors
-    h1{}  .cls{}  #id{}
-1.1 type : aka. tag name selector or element selector
-1.2全局选择器 [asterrisk *]
-可以用universal selector使选择器含义更明确如 
-    article *:firstchild = article :firstchild	# article的第一个子元素
-	!= article:firstchild	# 表示作为其他元素的第一个子元素的article
-1.3 class
-1.3.1 Targeting classes on particular elements
-	span.cls{ }
-1.3.2 Target an element if it has more than one class applied
-	.cls1.cls2{ }	# <div class="cls1 cls2">
-1.4 id, basicly same as class. (只是id似乎不可重复, 另外一个属性似乎也只能有一个id)
-#id
-h1#heading 
-  
-2. Attribute selectors
-    a[title]{}  
-    a[href="#"]{}
-3. Pseudo-class & Pseudo-element
-    a:hover{}
-    p::firstline{}
-4. Combinators
-    article > p {}		# direct child
-    
-
 # Table of selectors
 Type selector			  h1 {  }	
 Universal selector		   * {  }	
@@ -238,6 +211,68 @@ Descendant combinator	    article p
 Child combinator		    article > p	
 Adjacent sibling combinator	h1 + p	
 General sibling combinator	h1 ~ p
+
+Types of selectors
+1. Type, class & ID selectors
+    h1{}  .cls{}  #id{}
+1.1 type : aka tag name selector or element selector
+1.2全局选择器 [asterrisk *]
+可以用universal selector使选择器含义更明确如 
+    article *:firstchild = article :firstchild	# article的第一个子元素
+	!= article:firstchild	# 表示作为其他元素的第一个子元素的article
+1.3 class
+1.3.1 Targeting classes on particular elements
+	span.cls{ }
+1.3.2 Target an element if it has more than one class applied
+	.cls1.cls2{ }	# <div class="cls1 cls2">
+1.4 id, basicly same as class. (只是id似乎不可重复, 另外一个属性似乎也只能有一个id)
+    #id
+    h1#heading 
+  
+2. Attribute selectors
+    a[title]{}  
+    a[href="#"]{}
+2.1 Presence and value
+    [attr]	
+    [attr=value]	exactly
+    [attr~=value]	exactly or contained in a list(space seperated)
+    [attr|=value]	exactly or begin with value- (with a hypen)
+2.2 sbustring matching 
+    [attr^=value]  begin with 
+    [attr$=value]  end with
+    [attr*=value]  anywhere
+2.3 case sensitive #default
+    [attr^="a" i]  add `i` before closing braket to force case-insensitive.
+    [ s]           add `s` to force sentitive, not very useful though. 
+
+3. Pseudo-class & Pseudo-element
+    a:hover{}
+    p::firstline{}
+3.1 pseudo-class : a `state` of a element, as if you add a class to it.
+    p:first-child  #means state of p is first-child of others, but not first-child of p.
+3.1.1 simple pseudo-class
+	:first-child :last-child :only-child :invalid
+3.1.2 user action
+	:hover :focus
+3.2 pseudo-element: similar, just act as if you create a new element. 
+    [though something may be tricky as below]
+    p:first-child  #means state of p is first-child of others
+    p::firstline   no spaces between p and ::firstline  #means firstline of p
+    p span		  has space between p and span
+    #[and be careful: some old pseudo-element may use single colon or double both]
+3.3 combining 
+	article p:first-child::first-line { }
+3.4 Generating content with ::before and ::after
+    ::before{
+        content: 'before notes.';
+        display: 'block';
+    }
+
+4. Combinators
+    article   p {}		# descendant
+    article > p {}		# direct child
+    article + p {}		# adjacent sibling
+    article ~ p {}		# general siblings
 
 ```
 
