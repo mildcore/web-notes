@@ -276,3 +276,40 @@ Types of selectors
 
 ```
 
+
+
+## Box Model
+
+```css
+block-box & inline-box
+The full CSS box model applies to block boxes, inline boxes only use some of the behavior.
+inline: 不会导致换行；不能设置width/height；垂直方向不会推开其他元素；水平方向会推开；
+
+# display: inline-block   act as block, just dont break onto a newline.  (avoid overlap)
+
+content padding border margin
+# standard box model #content-box
+width|height padding border
+margin is not counted, it just defines the outer space of box.
+# alternative box model [box-sizing: border-box]
+width|heigth defines the visible box size on the page(that is content+padding+border)
+the method to use border-box but not content-box globally:
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+# margin 上右下左 可以为负
+margin会推开其他元素（但如果被推元素设置了固定的width、height，而推开会导致其变化，则不会推开）
+margin collapsing: 两个元素的margin会互相折叠，取最大值，如果有负数相减掉
+# border 
+[border-width border-style border-color]
+[border-top border-right border-bottom border-left]
+border-top-width...
+# padding 上右下左 不能为负
+not negative, background applied here.
+
+```
+
