@@ -311,6 +311,9 @@ border-top-width...
 # padding 上右下左 不能为负
 not negative, background applied here.
 
+outer display, inner display
+# display: flex 指定子元素按照 flex布局（inner）, 而该元素不变（outer）
+
 ```
 
 
@@ -368,6 +371,130 @@ border-bottom-left-radius
 border-raidus: 1em;
 border-raidus: 1em 1em/2em;   左上 右下 1em, 右上 左下 1em 2em
 border-top-right-raidus: 1em 2em;
+
+```
+
+
+
+## Text Direction
+
+```css
+writing-mode: horizontal-tb | vertical-rl | vertical-lr
+
+# block dimension:  the direction blocks displayed
+# inline dimension: the direction a sentence flows
+
+## Logical properties and values
+使用Logical属性让布局属性在不同文字方向的场合兼容（原来的width等属性是和物理屏幕方向关联的）
+width -> inline-size
+height -> block-size
+    top -> block-start
+    bottom -> block-end
+    left -> inline-start 
+    right -> inline-end
+margin-top -> margin-block-start
+margin-right -> margin-inline-end
+margin.. border.. padding..
+
+```
+
+
+
+## Content Overflow
+
+```css
+内容超出box的尺寸，就会溢出
+# 控制溢出行为，默认显示
+overflow: visible | hidden | scroll | auto
+	scroll : 永远显示scroll bar
+	auto: 只在溢出时显示滚动条
+overflow是个shorthand <> overflow-x overflow-y
+
+```
+
+
+
+## Values & Units
+
+```css
+##CSS VALUE aka. data-type. 
+<color>
+
+#Numeric
+<integer>	整数
+<number>	可含小数
+<dimension>	尺寸，带单位， 是<length><angle>等的总称类别
+<percentage> 
+#length - relative and absolute
+'absolute'
+Unit	Name	Equivalent to
+cm	Centimeters	1cm = 96px/2.54
+mm	Millimeters	1mm = 1/10th of 1cm
+Q	Quarter-millimeters	1Q = 1/40th of 1cm
+in	Inches	1in = 2.54cm = 96px
+pc	Picas	1pc = 1/6th of 1in
+pt	Points	1pt = 1/72th of 1in
+px	Pixels	1px = 1/96th of 1in
+'relative'
+Unit	Relative to
+em		Font size of the parent(font-size), or itself(width).
+ex		x-height of the element's font. 0.5em
+ch		The advance measure (width) of the glyph "0" of the element's font.
+rem		Font size of the root element.
+lh		Line height of the element.
+vw		1% of the viewport's width.
+vh		1% of the viewport's height.
+vmin	1% of the viewport's smaller dimension.
+vmax	1% of the viewport's larger dimension.
+#Percentages
+related to same property of parent [so width is the percentage of parent's width]
+#Numbers
+opacity: 0~1  0 transparent 1 opaque #会导致里面子元素也被影响 [区别于颜色的alpha只会影响自己]
+
+
+#Color
+#keywords
+lime rebeccapurple
+#hexadecimal	代表rgb rgba
+    #00ff00   #0f0
+    #00ff0088 #0f08
+#rgb rgba
+	rgb(0, 256, 0, 1)   a:0~1
+#hsl hsla
+	hsl(188, 97%, 28%)
+Hue: 	   The base shade of the color. 0~360 representing the angles round a color wheel.
+Saturation: How saturated is the color? 0–100%, 
+		where 0 is no color (appear as a shade of grey), and 100% is full color saturation
+Lightness: How light or bright is the color? 0–100%,
+		where 0 is no light (black) and 100% is full light ( white)
+
+#Images
+<image>		
+url('img url')
+linear-gradient(90deg, red, blue)
+
+#Position
+<position>	`background-positon`
+[values]: left | top | bottom | right | center  [<length>]
+2-value: the first horizontally, the second vertically. 
+1-value: the other axis will default to center.
+top left
+top 1em center
+
+#Strings and Identifiers
+red := identifier
+"i'm string"
+
+#Functions
+width: calc(20% + 100px);
+
+```
+
+
+
+## Sizing Items
+
+```css
 
 ```
 
