@@ -313,3 +313,61 @@ not negative, background applied here.
 
 ```
 
+
+
+## BackGround and Border
+
+```css
+BackGround
+1.background-color
+bottom layer
+
+2.background-image
+#background-repeat image
+	repeat|no-repeat|repeat-x|repeat-y
+#background-size image
+    cover|contain、  宽|高、  宽
+#background-position image 水平 垂直
+	background-position: right 1em bottom 10px
+    (background-position-x background-position-y)
+# gradient
+	background: function(..)
+linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+radial-gradient(red, blue, green)
+repeating-linear-gradient(to top left, lightpink, lightpink 5px, white 5px, white 10px)    
+repeating-radial-gradient(powderblue, powderblue 8px, white 8px, white 16px)
+conic-gradient(lightpink, white, powderblue)
+# multiple images
+  separating each one with a comma `,`   # from top to bottom.
+  background-* properties can also have values comma-separated
+#background-attachment
+when fixed to sth, it means 他们之间没有相对运动.
+	scroll # fixed to the page. 因为跟随页面滚动，相对于页面看起来反而是不滚动的
+	fixed  # fixed to the viewport. 视窗是固定的，所以页面滚动时，相对于页面看起来就像是滚动的
+	local  # fixed to the element. 元素可能跟随页面滚动，也可能自己滚动
+
+3.shorthand background
+background-color 	only after the final comma.
+background-size 	only after background-position with a '/' like: center/80%
+# example of multi-image and a bk-color [comma sep]
+background:   
+    linear-gradient(105deg, red 39%, green 96%) center center / 400px 200px no-repeat,
+    url(big-star.png) center no-repeat, 
+    rebeccapurple;
+
+
+Border, also see box-model
+1.rounded corners
+#border-raidus `shorthand`
+可以是1|2|3|4 个值， 与边距margin等类似  水平垂直指定不同时用/分割
+border-top-left-radius 		horizontal-r vertical-r | r(one value for both)
+border-top-right-radius 
+border-bottom-right-radius 
+border-bottom-left-radius
+'sample'
+border-raidus: 1em;
+border-raidus: 1em 1em/2em;   左上 右下 1em, 右上 左下 1em 2em
+border-top-right-raidus: 1em 2em;
+
+```
+
