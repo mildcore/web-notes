@@ -495,6 +495,112 @@ width: calc(20% + 100px);
 ## Sizing Items
 
 ```css
+#intrinsic size
+
+#extrinsic size
+'percentage' 
+block-level element
+width : 50%    1/2th of the space it would normally fill
+margins and paddings
+margin: 20%    1/5th of the inline size(width in horizontal-tb)
+'min and max size'
+min-height: 100px
+max-width: 100%   如果空间不够会scale down; 但空间大了不会stretch; 很多场合用来控制图像很适合responsive
+'viewport unit'
+vh vw   0.01
+```
+
+
+
+## Images, Media and Form Elements
+
+```css
+##Replaced Element
+# some replaced elements have intrinsic dimension & aspect ratio  (video, img)
+可替代元素，内部显示方式会按照自己的规则来显示，不受文档影响
+（当然这个元素本身在文档中的位置是受控制的，并且也可以通过特定元素属性来控制其内部内容的布局如object-fit）
+<iframe> <video> <embed> <img>				 # typical
+<option> <audio> <canvas> <object> <applet>   # only in specific cases
+<content added by css> 						# anonymous replaced elements
+<input type='image'>   						# as <img>
+
+
+#image
+比空间小不会stretch， 但比空间大会溢出 #通过设置img的max-width可解决
+#max-width 自动缩小（避免溢出），但不会拉伸
+	<iframe> <video>同样适用
+#object-fit 设置图片内容在img的content box里的fit方式（而不是img的parent元素的content box）
+fill    默认值，拉伸填满并显示完整内容（拉伸，不保持分辨率），会导致图片扭曲
+none    原有尺寸
+contain 拉伸自适应（只要求一个维度填满）以显示完整内容（拉伸，保持分辨率），宽荧幕模式letterboxed
+cover   拉伸填满（拉伸，保持分辨率），会造成图片被裁剪 
+scale-down  宽荧幕模式，类似于contain, 但是只缩小，不放大（此时相当于none）
+
+
+#forms 
+# 文本输入部件可以正常样式化
+# 很多部件无法样式化，受操作系统绘制。
+# 属性继承，有些浏览器表单部件不会继承font属性，可以手动指定
+button, input, select, textarea { 
+  font-family : inherit; 
+  font-size : 100%; 
+} 
+# 不同浏览器的forms元素可能使用不同的box-sizing, 同样可以手动维持一致性
+button, input, select, textarea {  
+  box-sizing: border-box; 
+  padding: 0;
+  margin: 0; 
+}
+# 对于文本输入，可以设置只在需要的时候显示滚动条
+textarea {
+  overflow: auto;
+}
+
+# Normalizing Stylesheets
+像上面描述的这种规范化的样式表设置，可以在不同的浏览器之间保持很好的一致性
+Normalize.css	# just one choice among that.
+
+```
+
+
+
+## Styling Tables
+
+```css
+Spacing and layout
+Some simple typography
+# table
+table-layout :> fixed | auto	#指定为fixed并且设置width, 就不会再根据cell内容自动调整
+width: 100%;
+boder-collapse :> collapse | separate	#指定为collapse让单元格之间的边框合并到一起
+
+# td th
+padding
+border
+text-wrap
+text-align
+font-family
+letter-spacing
+
+# graphics and colors
+background
+color
+text-shadow
+background-color
+background-image
+"Zebra striping"
+:nth-child(odd|even)
+
+# style caption
+caption-side: bottom| top	# 还有其他非标准值，left, right, top-outside, bottom-outside
+
+# Table styling quick tips
+1. simple, flexible   # using percentages, more responsive.
+2. table-layout: fixed # predictable, easily set column widths by setting on headings (<th>).
+3. border-collapse: collapse # neater border
+4. <thead>, <tbody>, and <tfoot> # logical chunks, easily layer styles on top of each other 
+5. use zebra striping # make alternative rows easier to read.
+6. text-align  # line up your <th> and <td> text, neater
 
 ```
 
