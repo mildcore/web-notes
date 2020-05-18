@@ -604,3 +604,16 @@ caption-side: bottom| top	# 还有其他非标准值，left, right, top-outside,
 
 ```
 
+
+
+## Debuging CSS
+
+```
+1. Take a step back from the problem
+2. Do you have valid HTML and CSS?
+3. Is the property and value supported by the browser?
+4. Is something else overriding your CSS?
+5. Make a reduced test case.
+
+```
+
