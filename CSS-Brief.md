@@ -606,7 +606,7 @@ caption-side: bottom| top	# 还有其他非标准值，left, right, top-outside,
 
 
 
-## Debuging CSS
+## Debug CSS
 
 ```
 1. Take a step back from the problem
@@ -614,6 +614,65 @@ caption-side: bottom| top	# 还有其他非标准值，left, right, top-outside,
 3. Is the property and value supported by the browser?
 4. Is something else overriding your CSS?
 5. Make a reduced test case.
+
+```
+
+
+
+## Organize Css
+
+```python
+# Tips to keep CSS tidy
+1. Coding Style Guide
+2. Keep Style Consistent
+3. Format Readable
+4. Comment
+5. Logical Sections
+  <1>. general styles. body  p  h1,h2..  ul,ol  table  a
+  <2>. utilities. for example: a class remove list-style.
+  <3>. site-wide. basic page layout, navigation style, the header...
+  <4>. specific things. a page, component...
+6. Avoid overly-specific selectors
+7. Break into multiple smaller css-file
+
+
+# CSS Methodology
+# OOCSS: Object Oriented CSS   (about reuse common css.)
+.media			   # reuse
+.media .content		# reuse
+.comment
+.list-item
+.comment .img
+
+<div class="media comment">
+  <img />
+  <div class="content"></div>
+</div>
+
+<li class="media list-item">
+  <img />
+  <div class="content"></div>
+</li>
+
+# BEM: Block-Level Element Modifier
+The additional classes are similar to OOCSS, despite strict naming conventions.
+<form class="form form--theme-xmas form--simple">
+  <input class="form__input" type="text" />
+  <input
+    class="form__submit form__submit--disabled"
+    type="submit" />
+</form>
+
+# SMACSS: Scalable and Modular Architecture for CSS
+# ITCSS
+# Atomic CSS
+
+
+# CSS Tooling
+1. Pre-Processor := compile raw to css.
+sass
+2. Post-Processor := optimize css, like remove spaces & comments.
+cssnano
 
 ```
 
