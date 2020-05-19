@@ -771,3 +771,76 @@ https://css-tricks.com/fighting-the-space-between-inline-block-elements/
 
 ```
 
+## Web Fonts
+
+```css
+
+# Find Fonts
+'A free font distributor'
+https://www.fontsquirrel.com/
+http://www.dafont.com/
+https://everythingfonts.com/
+'A paid font distributor'
+http://www.fonts.com/
+http://www.myfonts.com/
+> font foundries
+https://www.linotype.com/
+http://www.monotype.com/
+http://www.exljbris.com/
+'An online font service'
+
+#steps
+# download TTF (True Type Fonts) or OTF (Open Type Fonts).
+# webfont generator
+@font-face {
+    font-family: 'alex_brush';
+    src: url('fonts/alexbrush-regular-webfont.woff2') format('woff2'),
+         url('fonts/alexbrush-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+# using in css
+
+
+# Using an online font service
+# subscription-based
+'Adobe Fonts'
+https://fonts.adobe.com/
+'Cloud.typography'
+http://www.typography.com/cloud/welcome/
+# free
+'google fonts'
+
+#steps (no @font-face needed)
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap" rel="stylesheet">
+font-family: 'Balsamiq Sans', cursive;
+
+
+# bulletproof @font-face syntax
+@font-face {
+  font-family: 'ciclefina';
+  src: url('fonts/cicle_fina-webfont.eot');
+  src: url('fonts/cicle_fina-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/cicle_fina-webfont.woff2') format('woff2'),
+         url('fonts/cicle_fina-webfont.woff') format('woff'),
+         url('fonts/cicle_fina-webfont.ttf') format('truetype'),
+         url('fonts/cicle_fina-webfont.svg#ciclefina') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+font-family:= name to use
+url:= comma separated, normally newer type first, except that eot placed first(to fix bugs of old-ie)
+font-weight/font-style
+
+font-variant
+font-stretch
+unicode-range
+
+
+# Other
+# Variable fonts
+fonts that allow many different variations of a typeface to be incorporated into a single file, rather than having a separate font file for every width, weight, or style.
+
+```
+
