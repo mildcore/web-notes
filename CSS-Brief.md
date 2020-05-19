@@ -617,3 +617,100 @@ caption-side: bottom| top	# 还有其他非标准值，left, right, top-outside,
 
 ```
 
+
+
+# Style Text
+
+## Fundamental Text and Font
+
+```css
+#Font Styles
+color: red;
+font-family: Helvetica, Arial, sans-serif;	# serif, sans-serif, monospace, cursive, fantasy
+font-size: 5rem;
+font-style: italic;		# normal, italic(a version), oblique(simulated)
+font-weight: bold;		# normal, bold...
+text-transform: uppercase;	# none, uppercase, lowercase, capitalize, full-width
+text-decoration: underline; #shorthand(-line -style -color) none, overline, underline, line-through
+text-shadow: 4px 2px 3px red; # (horizontal-offset, vertical-offset, blur-radius, color)
+
+'font shorthand'
+-style, -variant, -weight, -stretch, -size+, line-height, -family+  (+ needed.)
+font: italic normal bold normal 3em/1.5 Helvetica, sans-serif;
+
+#Text Layout Styles
+text-align: right;	# left, right, center, justify
+line-height: 1.5;	# <number> <length>
+letter-spacing: 2px;	# <length> between character
+word-spacing: 2px;  # <length> 
+
+text-indent: 0;
+text-oveflow: ellipsis;		# along with "overflow: hidden; white-space: nowrap;"
+white-space: nowrap;
+...
+
+```
+
+
+
+## List
+
+```css
+#list-style #shorthand 
+	:= no order, -type could be a fallback of -image.
+# list-style-type: disc
+<custom-ident>, symbols(), <string>
+    none, disc, circle, square, '\1F44D'
+    decimal, decimal-leading-zero,
+    lower-alpha(lower-latin), lower-roman, lower-greek
+    simp-chinese-formal, simp-chinese-informal
+# list-style-position: outside
+	outside | inside
+# list-style-image: url('..')
+
+#list-count
+<ol start="4" reversed>
+  <li value='8'>		# will reset the start to `value 8`
+  <li value='5'>
+```
+
+
+
+## Links
+
+```css
+#link-state
+:link
+:visited	exists in brower history
+:hover
+:focus		e.g. `tab` to it
+:active		when being activated(e.g. clicked on)
+color
+cursor: pointer | default | text | help | move...	# 鼠标
+outline: 1px solid red;		#shorthand 轮廓边框，看上去跟border很相似（outside the border）
+	-style: auto|none|dotted|dashed|solid|double|groove|ridge|inset|outset
+'could use border-bottom to replace text-decoration'
+text-decoration: none;
+border-bottom: 1px solid;	# drawn lower(not cut across chars like g, y), more style options
+
+
+#add image to external links
+a[href*="http"]{
+  background: url('https://mdn.mozillademos.org/files/12982/external-link-52.png') no-repeat 100% 0;
+  background-size: 16px 16px;
+  padding-right: 19px;
+}
+
+
+#style links like buttons
+e.g. links in the navigator bar
+<ul><li><a/></li>..<ul>
+un :> no padding, width 100%
+li :> set to inline, all links in one line
+a :> set to inline-block so could set width
+'链接被放在HTML一行，避免之间出现space，影响布局。关于去除空格的更多技巧可参考：'
+https://css-tricks.com/fighting-the-space-between-inline-block-elements/
+
+
+```
+
