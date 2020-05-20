@@ -345,6 +345,7 @@ conic-gradient(lightpink, white, powderblue)
   background-* properties can also have values comma-separated
 #background-attachment
 when fixed to sth, it means 他们之间没有相对运动.
+when we say scroll or fixed, it is relative to viewport.
 	scroll # fixed to the page. 因为跟随页面滚动，相对于页面看起来反而是不滚动的
 	fixed  # fixed to the viewport. 视窗是固定的，所以页面滚动时，相对于页面看起来就像是滚动的
 	local  # fixed to the element. 元素可能跟随页面滚动，也可能自己滚动
@@ -841,6 +842,69 @@ unicode-range
 # Other
 # Variable fonts
 fonts that allow many different variations of a typeface to be incorporated into a single file, rather than having a separate font file for every width, weight, or style.
+
+```
+
+
+
+# CSS Layout
+
+## Introduction
+
+```css
+#Normal flow:
+how the browser lays out HTML pages by default when you do nothing to control page layout.
+display: inline | block | inline-block
+
+#Flex & Grid
+display: flex grid
+
+#Float
+float: none left right inherit
+
+#Positioning 
+{
+    positon: relative;
+    top = 20px;
+    left = 20px;
+}
+static		:= default
+relative	:= offset an item from the position in normal flow it would have by default
+absolute	:= 'move out of normal flow'(important). 
+			relative to the edge of <html> element (or its nearest positioned ancestor element).
+fixed		:= 'move out of normal flow', 
+			realtive to viewport
+sticky		:= like 'static', but act like 'fixed' when hit a defined offset from viewport
+
+#table-layout
+form {
+    display: table;
+}
+form > div {
+    display: table-row;
+}
+form label, form input{
+	display: table-cell;
+}
+form > p {
+    display: table-caption;
+}
+
+#Multi-column layout := lay out content in columns, similar to how text flows in a newspaper.
+column-count: 3;  # 3 cols
+or
+column-width: 200px;  # as many as could, with each col having 200px-width.
+
+```
+
+
+
+## FlexBox
+
+```css
+# flexbox
+one-dimensional layout method, flex to fill additional space and shrink to fit into smaller space.
+
 
 ```
 
