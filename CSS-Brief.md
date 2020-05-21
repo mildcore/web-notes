@@ -902,9 +902,153 @@ column-width: 200px;  # as many as could, with each col having 200px-width.
 ## FlexBox
 
 ```css
-# flexbox
+# FlexBox
 one-dimensional layout method, flex to fill additional space and shrink to fit into smaller space.
+           ——————————————————————————————————————————————     cross-start
+           | flex           <——main-size——>              |        ∧
+           | container      |—————————————|              |        |
+           |                |  flex item  |cross-size    |    cross-axis
+           |                |—————————————|              |        |
+           |———————————————————————————————————————————— |        ∨
+                                                              cross-end
+main-start <----------------- main-axis  ----------------> main-end
 
+
+# basic layout
+'container'
+#flex-flow: row wrap;
+flex-direction: row | column | row-reverse | column-reverse
+flex-wrap: nowrap | wrap | wrap-reverse
+
+# flexible sizing of items
+'item'
+#flex: 1 100px;
+flex-grow		proportion
+flex-shrink     ..
+flex-basis
+
+# alignment
+'container'
+align-items  := cross-axis
+	stretch | center | flex-start | flex-end | ..
+--align-self := covered in item;
+justify-content  := main-axis
+	flex-start | flex-end | center | space-around | space-between | space-evenly
+
+# orders
+'item'
+button:nth-child(2)
+{
+    order: 1;		:= default is 0, could be negative.
+}  
+
+
+```
+
+
+
+## Grid
+
+```css
+Grid Layout is a two-dimensional layout system.
+columns rows gaps(gutters)
+
+#basic-use
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; --3 column tracks
+    grid-gap: 20px;  --old-version, as a alias for compatibility just for some time.
+    gap: 20px;	     --gaps between tracks, cant be fr
+}
+# fr := fraction unit for flexible grid width. 
+# fr := Distributes available space, not all space(actually after space taken by fixed tracks)
+
+#repeating track listings
+grid-template-columns: repeat(3, 1fr);
+
+#explicit and implicit grid.
+'explicit'
+grid-template-columns, grid-template-rows
+:> 100px, 1fr, 1fr;
+'implicit'
+grid-auto-rows, grid-auto-colums
+:> auto | <length> | minmax(100px, auto) | <flex> (unit:fr) | max-content | min-content ..
+minmax(100px, 1fr)  #like flex-basis & flex-grow
+minmax(1fr, 100px)  #0 (or minimal content, if container sized under minimal content constraint)
+auto := as maximun :> maximal content
+        as minimum :> largest minimum size (as specified by min-width/min-height) of grid items
+
+
+#practice: creating as many columns as will fit
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-auto-rows: minmax(100px, auto);
+  grid-gap: 20px;
+}
+
+
+#line-based placement
+grid-row <> grid-row-start / grid-row-end
+grid-column <> grid-column-start / grid-column-end
+header{
+    grid-row: 1;
+    grid-column: 1/3;   --不包含end 3， 占据两列 1 ~ 2 
+}
+
+
+#Positioning with grid-template-areas
+grid-template-areas & grid-area
+'step 1. container'
+.container{
+  display: grid;
+  grid-template-areas: 
+      "header header"
+      "sidebar content"
+      "footer footer";
+  grid-template-columns: 1fr 3fr;
+  grid-gap: 20px;
+}
+'step 2. items'
+aside{
+    grid-area: sidebar;
+}
+...
+'syntax'
+1.all cells must be filled.(rectangular)
+2.To span across cells, repeat the name
+3.To leave a cell empty, use a . (period)
+
+```
+
+
+
+## Float
+
+```css
+# you can add a margin to the float to push the text away, but not the reverse.
+# actually only `line boxes` shortened. box model remain full width.
+float: left;		-- none | left | right
+margin-right: 10px;
+
+# Clearing floats (in normal-flow items)
+clear: none | left | right | both
+
+# boxes wrapped around a float
+make box wrapping around a tall float and a short para.
+1.The clearfix hack
+.wrapper::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+2.change overflow value: hidden|scroll|auto, just not default 'visible'
+BFC(block formatting context) := like a mini layout inside your page.
+.wrapper{
+    overflow: auto;
+}
+3.display: flow-root
+Create a BFC without using hacks. —— modern proper way
 
 ```
 
