@@ -1043,12 +1043,171 @@ make box wrapping around a tall float and a short para.
   display: block;
 }
 2.change overflow value: hidden|scroll|auto, just not default 'visible'
-BFC(block formatting context) := like a mini layout inside your page.
+BFC(block formatting context) := like a mini layout inside your page containing anything.
 .wrapper{
     overflow: auto;
 }
 3.display: flow-root
 Create a BFC without using hacks. —— modern proper way
+
+```
+
+
+
+## Position
+
+```css
+position: static;
+position: relative;
+
+left top right bottom
+
+# Absolute positioning := out-of-noraml-flow
+position: absolute;
+'positioning contexts' := which element the containing block sit in.
+'containing block' := where the element sit in.
+to absolute, they are :
+	parent element with a position value except default `static`.
+	padding box of that parent element.
+
+# z-index
+bigger value higher layer.
+z-index: 1; 	# auto(0)
+
+# Fixed positioning := also absolutely positioned, out of normal flow.
+relative to viewport ('initial containing block')
+position: fixed;
+
+# positon: sticky;
+act like relative until a threshold (e.g. 10px from the top of viewport), then like fixed
+注意：sticky的内容可能不会像fixed一样一定固定在vw, 而是可以跟随容器滑出屏幕。
+其容器containing block与staitc, relative一样:  
+	is the content box of the first parent element(满足条件是block或创建了一个FC)
+
+```
+
+
+
+## Multi Column
+
+```css
+#multicol
+column-count: 3;
+	exactly 3 col.
+column-width: 200px;	--comes first if both designated.
+	as much as could, with each at least 200px.
+
+#Styling the columns
+The columns created by multicol cannot be styled individually
+column-gap: 20px;
+column-rule: 4px dotted red;  # shorthand similar to border(-width -style -color)
+
+#Spanning columns (none or all)
+'item'
+column-span: all;
+
+#Columns and fragmentation
+control breaking of content in multicol and in paged media (# see "CSS Fragmentation")
+break-inside: avoid;		# use this to avoid a block content being breaked.
+page-break-inside: avoid;	# old version
+
+```
+
+
+
+## Responsive Design
+
+```css
+RWD: Responsive Web Design
+# coined in 2010
+1.fluid grids
+2.fluid images (max-width: 100%;)
+3.media query
+
+
+# media query brief
+@media screen and (min-width: 800px) { 
+  .container { 
+    margin: 1em 2em; 
+  } 
+} 
+breakpoints := the points at which a media query is introduced
+mobile first design := a common approach using media query.
+
+
+# flexible grids
+only add in a breakpoint where the content starts to look bad.
+in the oldtimes, using `float` layout.
+'float'
+.col1,
+.col2 {
+  background-color: #fff;
+}
+@media screen and (min-width: 600px) {
+  .col1 {
+    width: 31.24999999%;
+    float: left;
+  }
+  .col2 {
+    width: 64.58333331%;
+    float: right;
+  }
+}
+--Modern Layout Technologies
+--flex, grid, multicol  := inherently responsive, assume you want to create a flexible grid.
+'flexbox'
+@media screen and (min-width: 600px) {
+  .wrapper {
+    display: flex;
+  } 
+  .col1 {
+    flex: 1;
+    margin-right: 5%;
+  }
+  .col2 {
+    flex: 2;
+  }
+}
+'css grid'
+@media screen and (min-width: 600px) {
+  .wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    column-gap: 5%;
+  }
+}
+
+
+# Responsive images
+img {
+  max-width: 100%;
+} 
+more referring: HTML.Brief - <picture>.<source> [srcset media type], <img> [srcset sizes]
+
+
+# Responsive typography. newer thing not covered above.
+'changing font sizes within media queries'
+h1 { 
+  font-size: 2rem; 
+} 
+@media (min-width: 1200px) { 
+  h1 {
+    font-size: 4rem; 
+  }
+} 
+'Using viewport units for responsive typography'
+vw vh  :> 1vw = one percent of the viewport width
+h1 {
+  font-size: calc(1.5rem + 3vw);   # for zoomable, not use vw alone.
+}
+
+
+# viewport meta tag
+<meta name="viewport" content="width=device-width,initial-scale=1">
+--other viewport meta properties may not be used: 
+	height, minimum-scale, maximum-scale, user-scalable
+@viewport :> css rule to replace meta-tag, but poor supported. and will be covered by meta-tag.
+
 
 ```
 
