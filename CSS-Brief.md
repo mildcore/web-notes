@@ -1211,3 +1211,98 @@ h1 {
 
 ```
 
+
+
+## Media Query
+
+```css
+@media media-type and (meida-feature-rule){
+    /*css rules;*/
+}
+
+# media-type
+all print screen speech
+
+# media-feature-rule
+width height
+max-* min-*
+orientation: portrait | landscape		# 竖向模式、横向模式
+hover: hover						  # user has the ability to hover.
+pointer: none | fine | coarse 			# 如触摸屏手指操作就为coarse
+
+# complex rules
+'and logic'
+	and
+'or logic'
+	, comma seperate
+'not logic'
+     negate a whole rule seperated by comma.
+
+```
+
+
+
+## Legacy Layout Methods
+
+```css
+# floated grid
+使用float创建表格框架
+<wrapper>
+	<div class='row'>
+		<!-- 12 cols -->
+		<div class='col'></div>
+	</div>
+	<div class="row">
+		<div class='col span2 offset1'></div>
+	</div>
+</wrapper>
+
+# 手动计算设置列的宽度，margin-left, 多列合并的宽度等等..
+# 使用百分比计算代替绝对数值，可以实现fluid grid. （可借助calc）
+# 缺陷：
+	计算必须准确，否则会破坏表格结构。
+	内容超出会溢出。
+	内在结构是一维的，很难去很好的设置height.
+
+
+# flexbox grid
+
+# Third party grid systems
+Popular frameworks such as 'Bootstrap' and 'Foundation' include a grid system
+'Skeleton'
+Note: Normalize : a lib does some useful basic layout fixes and makes default element styling more consistent across browsers.
+
+```
+
+
+
+## Support Old Browser
+
+```css
+What is the browser landscape for your site?
+What is the support for the features you want to use?
+
+Creating fallbacks in CSS
+# two layout methods are applied to the same item.
+# Fallback Methods
+	Float and clear			# for gird and flex
+	display: inline-block	 # for grid and flex
+	display: table			# for grid and flex
+	Multiple-column Layout	 # for grid
+	flexbox					# for grid
+# Feature queries	# fallback可能会改变了其他数值，比如width, 可通过检查浏览器支持grid特性，进而进行重置。
+@supports (display: grid) {
+    .item {
+        width: auto;
+	}
+}
+
+# Older versions of `Flexbox` （ie 10, prefix -ms-）
+# The IE10 and 11 prefixed version of `Grid` (-ms-)
+
+# Testing older browsers
+1. online testing tool such as Sauce Labs. (refer to:> [Cross browser testing] module)
+2. virtual machines which runs older browsers.
+
+```
+
