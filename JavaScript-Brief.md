@@ -186,7 +186,80 @@ strs.join(',');
 
 # JavaScript Building Blocks
 
+## Condition
+
 ```javascript
+// if-condition
+// false : [false, undefined, null, 0, NaN, '']
+// true: 其他
+if () {}
+else if () {}
+else {}
+
+// &&  ||  !
+
+// switch
+switch(a){
+    case val1:
+        ..
+        break;
+    default:
+    	..        
+}
+
+// 3元运算符
+（cond） ? ex1 : ex2;
+
+```
+
+## Loop
+
+```javascript
+// for loop
+for (var i = 0; i < 100; i++) {
+    ..
+}
+
+// break, continue
+
+// while， do..while
+while (cond){}
+do {} while (cond)
+
+```
+
+## Function
+
+```javascript
+// define a function
+function funcname(){}
+
+// anonymous function
+let button = document.querySelector('button');
+button.onclick = function() {}
+
+// scope作用域
+// 注意js内部函数调用, 无法访问外部函数变量。但可以访问全局变量。
+
+```
+
+## Events
+
+```javascript
+// 1.Event handler properties
+btn.onclick = bgChange;		// bgChange is a function.
+btn.onclick = fun2();		// 会覆盖前面的，只能有一个注册的事件处理
+
+// 2.addEventListener() and removeEventListener()
+// 可以注册多个事件处理
+btn.addEventListener('click', bgChange);
+btn.addEventListener('click', functionB);	// 不会覆盖，两个都有效
+btn.removeEventListener('click', bgChange);  // 移除一个事件处理器
+
+// 3.Inline event handlers — don't use these
+// event handler HTML attributes 
+<button onclick="bgChange()">Press me</button>
+
 
 ```
 
