@@ -239,7 +239,14 @@ let button = document.querySelector('button');
 button.onclick = function() {}
 
 // scope作用域
-// 注意js内部函数调用, 无法访问外部函数变量。但可以访问全局变量。
+// 注意js内部函数调用, `-无-↓-法-`访问外部函数变量。但可以访问全局变量。
+// 更正: 应该是也可以访问外部函数变量的，经试验可以实现闭包。
+
+//箭头函数 arrow function.
+// (x) => x 是 (x)=> {return x;}  的有效简写;
+x => x*x;		//定义一个匿名函数，返回平方 
+(x, y) => x+y;	 //定义一个匿名求和函数
+
 
 ```
 
@@ -284,7 +291,7 @@ e.stopPropagation();
 
 
 
-# Objects
+# JavaScript Objects
 
 ## Basic
 
@@ -382,6 +389,8 @@ B.prototype.constructor = B;			   // 前面代码改变了constructor的值，�
 
 ```
 
+
+
 ## JSON
 
 ```javascript
@@ -389,6 +398,97 @@ JavaScript Object Notation : 使用类javascript对象数据格式来表示结�
 // parse, stringify
 JSON.parse(json_txt)
 JSON.stringify(json_obj)
+
+```
+
+
+
+# JavaScript Asynchronous
+
+## Introducing Asynchronous JavaScript 
+
+```javascript
+1.Async Callbacks
+function loadAsset(url, type, callback) {
+  //..
+  xhr.onload = function() { callback(xhr.response); };
+}
+
+2.Promises
+// 结构： .then(func).then(func).catch(func)
+fetch('products.json').then(function(response) {
+  return response.json();
+}).then(function(json) {
+  //..
+}).catch(function(err) {
+  console.log('Fetch problem: ' + err.message);
+});
+
+// Promise会进入事件队列；主线程执行完毕，再依次执行事件队列；
+
+// 比较：Promise本质上是一个返回的对象，可以直接将回调附加到对象上。其优势：
+1. 使用then连接多个回调，避免回调地狱(末日金字塔)。callback hell (pyramid of doom)
+2. Promise严格按照放在事件队列里的顺序执行。
+3. 错误处理更容易，直接放在最后的.catch()
+
+
+
+```
+
+
+
+## Cooperative Async JS: Timeouts and intervals
+
+```javascript
+// 这一节的3个方法，依然是在主线程下执行，所以注意不要滥用
+setTimeout
+setInterval
+requestAnimationFrame
+
+// Timeout, 执行一次
+// 函数， 至少等待时间（ms）, 传给函数的参数值（0个或多个）
+timeoutRef = setTimeout(func, 2000); // 返回值可以用来指代这个timeout, 实际等待时间是大于2000不确定的
+clearTimeout(timeoutRef);			// 可以利用返回值清除某个timeout
+
+// Interval, 周期执行
+const myInterval = setInterval(myFunction, 2000);
+clearInterval(myInterval);
+
+# 注意点
+1. 递归的timeout可以代替interval.
+// 区别在于timeout的时间是上一次结束到下一次开始, interval时间包含了执行时间。
+// 所以interval可能会发生执行时间超出等待时间的问题。
+toRef = setTimeout(func, 2000);
+function func(){
+    //..
+    setTimeout(func, 2000)
+}
+2. 立即结束
+setTimeout(func, 0)		// 主线程执行完成后，立即执行该任务。
+
+// requestAnimationFrame
+// 专门的循环函数，旨在在浏览器高效运行动画。是对interval的改进版（帧率不按设备优化, 有时丢帧; 页面未激活、组件滚出屏幕仍在运行等）。
+function draw(){
+    //draws..
+    requestAnimationFrame(draw);
+};
+draw();
+// requestAnimationFrame的回调函数可以接收一个时间戳timestamp
+function draw(timestamp){..}
+// ie10以上就已经支持requestAnimationFrame
+// 取消,类似于前两个
+cancelAnimationFrame(rafRef);
+
+```
+
+
+
+## Promise
+
+```javascript
+一个promise只能成功或失败一次。并且一旦操作完成，它就无法从成功切换到失败，反之亦然。
+如果promise成功或失败，并且您稍后添加成功/失败回调，依然将调用正确的回调，即使事件发生在较早的时间。
+
 
 ```
 
