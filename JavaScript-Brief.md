@@ -261,5 +261,134 @@ btn.removeEventListener('click', bgChange);  // 移除一个事件处理器
 <button onclick="bgChange()">Press me</button>
 
 
+# Event Concepts
+// event object. event/evt/e
+function bgChange(e){
+    e.target.style.backgroundColor = 'rgb(0, 0, 123)';
+}
+btn.addEventListener('click', bgChange);
+
+// 阻止默认行为，如表单提交。 Preventing default behavior
+e.preventDefault();
+
+// Event bubbling and capture (two different phase)
+capturing phase: from outer to inner, check and run eventhandler.
+bubbling phase: opposite.
+// by default, all event-handlers are registered for bubbling phase.
+// if both types exist. capturing phase run first ->  then bubbling 
+
+// 阻止事件传播
+e.stopPropagation();
+
+```
+
+
+
+# Objects
+
+## Basic
+
+```javascript
+// 对象字面量 object literal
+var book = {name: 'Python CookBook', author: 'Michael Jim', price: 100}
+
+# 对象访问属性两种方法
+book.name 		//dot notation
+book['name']	//Bracket notation (objects are sometimes called associative arrays[关联数组])
+# 使用括号表示法，能使用变量做变量名
+var attrname = 'at1';
+var attrvalue = 'value';
+book[attrname] = attrvalue;		
+book.at1 = 'value';		// 等同于这个效果
+
+# this, js使用this关键字引用当前对象
+this.name		
+
+// 对象构造函数 construct function
+function Person(name) {
+  this.name = name;
+  this.greeting = function() {
+    alert('Hi! I\'m ' + this.name + '.');
+  };
+}
+var jack = new Person('jack');
+
+# Other ways to create object instances
+// Object() constructor. 直接new一个空对象
+var person1 = new Object();   			// 构造一个空对象。还可以直接传入一个字典（object literal）来构造Object对象， 有点奇怪哈。
+// Object.create() 基于现有对象构建一个对象
+var person2 = Object.create(person1)	// 有点像是复制
+
+```
+
+
+
+## Prototype
+
+```javascript
+javascript: 基于原型的语言 prototype-based language.
+每个对象拥有一个`prototype对象`，从原型对象继承方法和属性。 // Object.getPrototypeOf(obj) 或者 obj.__proto__
+原型对象也可以有自己的原型对象，从而形成原型链。Prototype Chain.
+属性和方法定义在对象的构造器函数的`prototype属性`上
+
+# 关于对象的原型对象和构造器的原型属性
+// 前者是实例的属性，后者是构造器的属性
+`Object.getPrototypeOf(new Foobar())` refers to the same object as `Foobar.prototype`
+
+function doSomething(){}
+doSomething.prototype.foo = "bar";      // 属性定义在构造器函数的原型属性上， 只有定义在构造器原型属性上的方法属性才被继承
+console.log( doSomething.prototype );
+
+# prototype属性： 继承成员定义的地方
+// Object.create()
+ins2 = Object.create(ins1);		// 实际上把ins1作为了ins2的prototype对象
+// constructor
+ins2.constructor;		// 可以获取实例的构造器函数
+
+// 修改原型后会动态更新，已生成实例也会更新到最新的方法和属性。
+// 原因应该在于js的继承并非是复制方法和属性，而是通过proto-chain动态寻找。
+
+// js的对象定义模式
+// 在构造器（函数体）中定义属性、在构造器的prototype属性上定义方法
+function Test(a,b,c,d) {
+  this.a = 1;						  // 定义属性
+};
+Test.prototype.x = function () { ... }	// 定义方法
+
+```
+
+
+
+## Inheritance
+
+```javascript
+// 父类
+function A(name){
+    this.name = name;
+}
+A.prototype.say = function(){return 'i am ' + this.name};
+// 子类
+function B(name, sex){
+    A.call(this, name);
+    this.sex = sex;
+}
+B.prototype = Object.create(A.prototype);	// 要从prototype继承方法，必须手动指定构造器的原型属性，从父类的构造器原型属性衍生过来；
+B.prototype.constructor = B;			   // 前面代码改变了constructor的值，所以必须重新指定prototype属性的constructor值。
+
+// ew..麻烦的js继承...果然不应该叫做面向对象语言
+// 不管怎样，这并不是js继承实现的唯一方式。
+较新的js提供了class定义。
+另外一些js库也提供了一些方法来实现继承, 比如coffeescript.'http://coffeescript.org/#classes'
+
+```
+
+## JSON
+
+```javascript
+JavaScript Object Notation : 使用类javascript对象数据格式来表示结构化数据的一个基于文本的数据格式.
+// parse, stringify
+JSON.parse(json_txt)
+JSON.stringify(json_obj)
+
 ```
 
