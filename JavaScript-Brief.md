@@ -489,6 +489,108 @@ cancelAnimationFrame(rafRef);
 一个promise只能成功或失败一次。并且一旦操作完成，它就无法从成功切换到失败，反之亦然。
 如果promise成功或失败，并且您稍后添加成功/失败回调，依然将调用正确的回调，即使事件发生在较早的时间。
 
+基本语法
+.then(resp => {}).catch(e => {}).finally(() => {});
+
+概念
+1. 一个promise被创建后处于'pending'状态。
+2. promise返回时，称作已被'resolved'. 成功resolved，叫'fulfilled'; 失败叫'rejected';
+
+# 多个promise fulfilled.
+// 利用Promise.all(), then会传递一个结果的数组
+// 必须全部成功实现，有一个失败，就会rejected. 
+// 如果单个promise内部实现了catch, 则all不会表现为失败, 而是得到一个undefine值.
+Promise.all([p1, p2, p3]).then(values => {})
+
+# 构造自定义promises
+1. 使用Promise()构造函数
+// 需要创建一个函数传入构造器方法，这个函数需要接收两个函数参数，resolve和reject, 用来完成或拒绝；
+new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('ok now.')
+    }, 2000)
+}).then( val => alert(val));
+
+2. reject
+// 一个function内部实现了异步， 这个function便也成了异步
+function myPromise(interval){
+    return new Promise((resolve, reject) => {
+        if (interval < 0 || typeof interval !== 'number'){
+            reject('interval is negative or not a number.')
+        } else {
+            setTimeout(() => resolve('ok now.'), 2000)
+        }
+    });
+}
+```
+
+
+
+## async & await
+
+```javascript
+// async把一个函数变成async function
+async function hello(){return 'hello'}; 
+hello();	//函数调用会返回一个promise, 而不是直接返回结果
+// await只能用在async function里，用来等待一个async promise-based function的调用
+async function hello() {
+  return greeting = await Promise.resolve("Hello");		// return和赋值可以同时使用，应用的是同一个值，js还挺有特色
+};
+hello().then(alert);
+
+// .then 转化为 async/await
+fetch('url').then(resp => resp.blob()).then(blob => URL.createObjectURL(blob));
+async function geturl(){
+    let resp = await fetch('url');
+    let blob = await resp.blob();			// 只有promise才需要await, blob也是个async promise-based function
+    
+    url = URL.createObjectURL(blob);		// 这个不是async promise-based function
+    return url;
+}
+geturl().catch(e => console.log(e.message));
+
+// 错误处理
+1. async函数里可以直接使用 try .. catch ..
+2. 函数调用后，对promise使用.catch, 就像以前一样（会同时捕捉异步函数和promise链[.then]里的错误）
+
+// 等待Promise的方法
+let values = await Promise.all([coffee, tea, description]);
+
+// 关于await的执行时间
+// 直接在调用上await, 会等待前一个执行完，才执行下一个。总时间2s
+await MyPromise(1000);
+await MyPromise(1000);
+// 先把调用结果存到变量，最后再一系列await，是同时执行的。总时间1s
+`值得注意，不过js这个语言特色很奇怪的样子. 对几个存到变量里的promise连续await, 是同时执行, 不会等待一个执行完才执行下一个`
+const p1 = MyPromise(1000);
+const p2 = MyPromise(1000);
+await p1;
+await p2;
+
+# 类方法async
+// 定义类Person
+class Person {
+  constructor(first, last, age) {
+    this.name = {
+      first,
+      last
+    };
+    this.age = age;
+  }
+
+  async greeting() {
+    return await Promise.resolve(`Hi! I'm ${this.name.first}`);
+  };
+    
+  farewell() {
+    console.log(`${this.name.first} has left the building. Bye for now!`);
+  };
+}
+// 调用async方法
+new Person('jim', 'bob', 28).greeting().then(console.log);
+
+# 浏览器支持
+可以利用'BabelJS'库实现js代码的回退，以支持老式浏览器的正常使用。
 
 ```
 
