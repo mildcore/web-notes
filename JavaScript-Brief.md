@@ -594,3 +594,28 @@ new Person('jim', 'bob', 28).greeting().then(console.log);
 
 ```
 
+
+
+# JavaScript Web API
+
+## User-Side Storage
+
+```javascript
+// cookie
+document.cookie = 'name:jack';
+document.cookie = 'age:28';
+allCookies = document.cookie;	// name:jack;age:28
+
+// WebStorage API
+// sessionStorage: 生命周期会话
+// localStorage: 保存到本地
+localStorage.setItem('name','Jack');
+localStorage.getItem('name');
+localStorage.removeItem('name');
+
+// IndexedDB
+
+
+
+```
+
