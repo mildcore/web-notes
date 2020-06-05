@@ -614,8 +614,11 @@ localStorage.getItem('name');
 localStorage.removeItem('name');
 
 // IndexedDB
+存储结构化数据的数据库
 
-
+// Service Workers & Cache API 离线访问
+service worker: 一个注册的js文件，针对特定的源（站点，或者站点的一部分（在特定域名下））；
+cache api: 一个客户端存储机制，旨在保存http响应
 
 ```
 
