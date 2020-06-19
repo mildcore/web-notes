@@ -340,7 +340,7 @@ javascript: 基于原型的语言 prototype-based language.
 
 # 关于对象的原型对象和构造器的原型属性
 // 前者是实例的属性，后者是构造器的属性
-`Object.getPrototypeOf(new Foobar())` refers to the same object as `Foobar.prototype`
+`Object.getPrototypeOf(new Foobar())` refers to the same object as `Foobar.prototype`. 另注意参见下面例子ins2.
 
 function doSomething(){}
 doSomething.prototype.foo = "bar";      // 属性定义在构造器函数的原型属性上， 只有定义在构造器原型属性上的方法属性才被继承
@@ -348,9 +348,10 @@ console.log( doSomething.prototype );
 
 # prototype属性： 继承成员定义的地方
 // Object.create()
-ins2 = Object.create(ins1);		// 实际上把ins1作为了ins2的prototype对象
+ins2 = Object.create(ins1);		// 实际上把ins1作为了ins2的prototype对象； ins2.__proto__ = ins1
 // constructor
-ins2.constructor;		// 可以获取实例的构造器函数
+ins2.constructor;		        // 可以获取实例的构造器函数, 注意ins2.constructor.prototype !== ins2.__proto__
+     // 实际上ins2没有真正属于自己的构造器, 而是从proto-chain获取, ins2.constructor.prototype === ins1.__proto__
 
 // 修改原型后会动态更新，已生成实例也会更新到最新的方法和属性。
 // 原因应该在于js的继承并非是复制方法和属性，而是通过proto-chain动态寻找。
@@ -379,8 +380,17 @@ function B(name, sex){
     A.call(this, name);
     this.sex = sex;
 }
+/* 
+注意：如果此时new一个实例insb，下面的方法无法动态更新insb方法。（即没有say方法, 这里也说明方法的查找是在实例的__proto__链里进行）
+原因：因为insb.__proto__和B.prototype还是两个属性, 他们之所以相等, 应该是new的作用效果。
+	 而下面的继承实现方式是赋值，将B.prototype指向了另一个对象，所以insb.__proto__ !== B.prototype.
+如果要让insb含有say方法，应在通过B.prototype实现继承后再创建实例，或者使用修正代码：
+	 insb.__proto__ = B.prototype;
+*/
+insb = new B();				
+// 子类继承父类方法
 B.prototype = Object.create(A.prototype);	// 要从prototype继承方法，必须手动指定构造器的原型属性，从父类的构造器原型属性衍生过来；
-B.prototype.constructor = B;			   // 前面代码改变了constructor的值，所以必须重新指定prototype属性的constructor值。
+B.prototype.constructor = B;			   // 前面代码改变了constructor的值（undefine），所以必须重新指定prototype属性的constructor值。
 
 // ew..麻烦的js继承...果然不应该叫做面向对象语言
 // 不管怎样，这并不是js继承实现的唯一方式。
@@ -456,8 +466,8 @@ clearInterval(myInterval);
 
 # 注意点
 1. 递归的timeout可以代替interval.
-// 区别在于timeout的时间是上一次结束到下一次开始, interval时间包含了执行时间。
-// 所以interval可能会发生执行时间超出等待时间的问题。
+// 区别在于timeout的时间是上一次结束到下一次开始, interval时间是上一次开始到下一次开始，包含了执行时间。
+// interval可能会发生执行时间超出等待时间的问题。
 toRef = setTimeout(func, 2000);
 function func(){
     //..
