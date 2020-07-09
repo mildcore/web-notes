@@ -1,6 +1,10 @@
+
+
+[TOC]
+
 # Git
 
-### 概览
+## 概览
 
 ```json
 日志
@@ -16,7 +20,7 @@ git commit -m 'msg'
 
 ```
 
-### 远程仓库
+## 远程仓库
 
 ```json
 1. 创建密钥SSH Key
@@ -35,7 +39,7 @@ git clone
 
 ```
 
-### 版本控制
+## 版本控制与文件操作
 
 ```json
            	 |      版本库         |
@@ -77,7 +81,7 @@ gir rm --cached <file>	// 只删索引区
 
 ```
 
-### 分支
+## 分支管理
 
 ```json
 1. 查看
@@ -118,7 +122,7 @@ git cherry-pick <commit>		// 通常用来修复master分支一个bug后，将bug
 
 ```
 
-### 标签
+## 标签管理
 
 ```json
 1. 新建
@@ -149,7 +153,7 @@ git tag -a new old^{} -m 'new info'
 
 ```
 
-### 比较文件Diff
+## 比较文件Diff
 
 ```json
 1. 比较
@@ -192,7 +196,7 @@ index cbe0187..98ded77 100644		// hash值..hash值（不是版本id） 普通文
 
 ```
 
-###　其他
+##　其他
 
 ```json
 .gitignore
@@ -204,8 +208,29 @@ git config --global alias.co checkout
 git config --global alias.ci commit
 git config --global alias.br branch
 
+日志
 git config --global alias.lg "log --graph --pretty=oneline --abbrev-commit"
 git config --global alias.lgv "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
 ```
+
+##　Practices
+
+### rebase
+
+```json
+// rebase可以将commit记录线性化
+合并分支
+git rebase dev	// 在master使用，可以将dev分支rebase到master分支
+
+拉取远程数据
+git pull --reabse  // = git fetch + git rebase FETCH_HEAD
+
+出现冲突时
+1.手动解决后git add, git rebase –continue继续
+2.或者git rebase –skip忽略冲突
+
+```
+
+
 
