@@ -199,18 +199,21 @@ index cbe0187..98ded77 100644		// hash值..hash值（不是版本id） 普通文
 ##　其他
 
 ```json
-.gitignore
-git check-ignore -v <file>
+// .gitignore
+git check-ignore -v <file>  // 对指定文件进行忽略规则检测
 
-别名
+// 别名
 git config --global alias.st status
 git config --global alias.co checkout
 git config --global alias.ci commit
 git config --global alias.br branch
 
-日志
+// 日志
 git config --global alias.lg "log --graph --pretty=oneline --abbrev-commit"
 git config --global alias.lgv "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+// 修改commit的msg
+git commit --amend
 
 ```
 
