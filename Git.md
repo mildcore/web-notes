@@ -129,12 +129,12 @@ git cherry-pick <commit>		// 通常用来修复master分支一个bug后，将bug
 git tag -a v0.1 -m 'tag info' [commit id]
 
 2. 查看
-git show v0.1  // 指定标签
+git show v0.1  // 指定标签 -q隐藏diff信息
 git tag  // 所有标签
 
 3. 上传
 git push origin v0.1
-git push origin --tags // 推送全部未推送过的本地标签
+git push origin --tags // 推送全部未推送过的本地标签 -f强制更新远程标签
 
 4. 删除
 git tag -d v0.1
