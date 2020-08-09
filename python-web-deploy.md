@@ -106,8 +106,11 @@ $ `pip3 --version`
 
 ## Supervisor安装
 $ `pip3 install supervisor`  
-$ `echo_supervisord_conf > /etc/supervisord.conf`
+$ `echo_supervisord_conf > /etc/supervisord.conf`  
+$ `mkdir -p /etc/supervisord.d/conf`  
+$ `echo 'files = supervisord.d/conf/*.conf' >> /etc/supervisor.conf`  
 
+修改以下默认地址`/var/run/supervisor/supervisor.sock`, `/var/log/supervisor/supervisor.log`, `/var/run/supervisor.pid`
 
 
 ## MySQL5.7安装
