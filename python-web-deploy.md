@@ -102,15 +102,66 @@ $ `make altinstall`
 $ `python3 --version`
 $ `pip3 --version`
 
+### 安装程序所需python库
+$ `venv\Scripts\activate`  
+$ `pip freeze > requirements.p`
+
+$ `pip3 install -r requirements.p`  
+$ `chmod +x app.py`  
+$ `./app.py`  # 启动测试 需配置#!/usr/bin/env python3
 
 
 ## Supervisor安装
 $ `pip3 install supervisor`  
 $ `echo_supervisord_conf > /etc/supervisord.conf`  
 $ `mkdir -p /etc/supervisord.d/conf`  
-$ `echo 'files = supervisord.d/conf/*.conf' >> /etc/supervisor.conf`  
+$ `mkdir -p /var/log/supervisor/`  
+$ `mkdir -p /var/run/supervisor/`  
+$ `echo 'files = supervisord.d/conf/*.conf' >> /etc/supervisor.conf` # [include]前面的注释要去掉  
 
 修改以下默认地址`/var/run/supervisor/supervisor.sock`, `/var/log/supervisor/supervisor.log`, `/var/run/supervisor.pid`
+
+$ `wget -O /usr/lib/systemd/system/supervisord.service https://raw.githubusercontent.com/Supervisor/initscripts/master/centos-systemd-etcs`  
+$ `vi /usr/lib/systemd/system/supervisord.service` # 修改`/usr/bin`为`/usr/local/bin`  
+
+```
+# supervisord service for systemd (CentOS 7.0+)
+# by ET-CS (https://github.com/ET-CS)
+[Unit]
+Description=Supervisor daemon
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/supervisord -c /etc/supervisord.conf
+ExecStop=/usr/local/bin/supervisorctl shutdown
+ExecReload=/usr/local/bin/supervisorctl reload
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+$ `systemctl enable supervisord.service`  
+$ `systemctl start supervisord.service`  
+$ `systemctl status supervisord.service`  
+
+### supervisor配置app运行
+$ `vi /etc/supervisord.d/conf/awesome.conf`  
+```
+[program:awesome]
+command=/srv/awesome/www/app.py
+directory=/srv/awesome/www
+user=wwwdata
+startsecs=3
+redirect_stderr=true
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=10
+stdout_logfile=/srv/awesome/log/app.log
+```
+$ `supervisorctl reload`  
+$ `supervisorctl start awesome`  
 
 
 ## MySQL5.7安装
@@ -130,7 +181,8 @@ $ `sudo yum repolist enabled | grep mysql`
 $ `sudo yum module disable mysql`       # EL8 systems only  
 $ `sudo yum install mysql-community-server`  
 $ `sudo service mysqld start`  
-$ `sudo service mysqld status`  
+$ `sudo service mysqld status`   
+$ `systemctl enable mysqld`
 
 $ `sudo grep 'temporary password' /var/log/mysqld.log`  #自动生成的root密码  
 $ `mysql -uroot -p`  
@@ -139,3 +191,45 @@ $ `quit;`
 
 $ `sudo yum --disablerepo=\* --enablerepo='mysql*-community*' list available`	# 显示系统支持的其他mysql组件包  
 $ `sudo yum install package-name`  
+
+### 配置数据库
+$`vi /etc/my.cnf`
+```
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+symbolic-links=0
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+# define by bobo.
+port=3306
+key_buffer_size=16M
+max_allowed_packet=8M
+
+log_timestamps=SYSTEM
+#default-time-zone='+8:00'
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+skip-character-set-client-handshake
+
+
+[client]
+port=3306
+socket=/var/lib/mysql/mysql.sock
+
+[mysqldump]
+quick
+
+[mysql]
+no-auto-rehash
+connect_timeout=2
+```
+$ `systemctl restart mysqld`
+
+### 创建数据库，恢复数据
+$ `source /srv/awesome/www/schema.sql;`
+$ `mysql -uroot -p awesome < /srv/awesome/backup/awesome_back_20200807.sql`
+
+### 修改config_server.py
+部署环境数据库地址用户名等
