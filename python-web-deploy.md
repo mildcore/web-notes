@@ -16,14 +16,22 @@ SecureCRT 8.5.3
 
 2. 把公钥放入Linux目录
 
-    $ cd ~  
-    $ mkdir .ssh  
-    $ chmod 700 .ssh/  
-    $ ssh-keygen -i -f Identity.pub >authorized_keys  
+    $ `cd ~`  
+    $ `mkdir .ssh`  
+    $ `chmod 700 .ssh/`  
+    $ `ssh-keygen -i -f Identity.pub >authorized_keys`  # 转为OpenSSH密钥格式  
     
-    添加多个公钥方法 $ cat ../id_rsa.pub >> authorized_keys
+    添加多个公钥方法 $ `cat ../id_rsa.pub >> authorized_keys`
     
 3. CRT会话属性设置 - SSH2 - 鉴权 - PublicKey 属性 - 使用会话公钥设置 - 选择私钥文件Identity
+
+### SSH密钥生成方式二
+使用ssh-keygen生成，会自动在linux目录生成相应文件，把私钥下载到开发机器并在SSH连接工具（如SecureCRT）里配置使用。
+
+$ `ssh-keygen -t dsa`  
+$ `cd ~/.ssh`  
+$ `mv id_dsa.pub authorized_keys`  
+$ `chmod 600 authorized_keys`
 
 [配置参考1][ssh dsa]  
 [配置参考2][ibm konwledge]
