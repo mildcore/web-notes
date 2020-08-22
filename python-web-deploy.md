@@ -33,6 +33,31 @@ $ `cd ~/.ssh`
 $ `mv id_dsa.pub authorized_keys`  
 $ `chmod 600 authorized_keys`
 
+### 安全性设置
+连接服务器，发现有很多错误连接尝试，挪威、俄罗斯等等国外的IP。几分钟就二十多个了...
+```
+Last failed login: Sat Aug 22 12:43:27 CST 2020 from ti0011q162-2726.bb.online.no on ssh:notty
+There were 33498 failed login attempts since the last successful login.
+Last login: Mon Aug 17 22:04:03 2020 from ---------
+
+Last failed login: Sat Aug 22 12:57:11 CST 2020 from 194.87.138.116 on ssh:notty
+There were 26 failed login attempts since the last successful login.
+Last login: Sat Aug 22 12:51:02 2020 from ---------
+```
+emm，网络安全还需注意，强烈建议关闭密码连接通道  
+$ `vi /etc/ssh/sshd_config`
+
+```
+passwordAuthentication no
+```
+$ `service sshd restart` 或 `systemctl restart sshd.service`重启sshd  
+$ `systemctl restart status sshd`查看状态  
+
+后面再登录看就很干净了
+```
+Last login: Sat Aug 22 13:05:47 2020 from ------
+```
+
 [配置参考1][ssh dsa]  
 [配置参考2][ibm konwledge]
 
@@ -88,9 +113,93 @@ nginx -s <signal>
 signal: quit reload reopen stop
 ```
 
+### 使用systemctl启动nginx
+配置nginx.service  
+$` vi /usr/lib/systemd/system/nginx.service `  
+```
+[Unit]
+Description=nginx - high performance web server
+Documentation=http://nginx.org/en/docs/
+After=network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
+
+[Service]
+#User=root
+#Group=root
+Type=forking
+PIDFile=/var/run/nginx.pid
+ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+#Restart=on-failure
+#RestartSec=60s
+
+[Install]
+WantedBy=multi-user.target
+```
+$ `systemctl enable nginx.service`  
+$ `systemctl start nginx`  
+
+若因为selinux启动失败解决方法  
+$ `setenforce 0`临时关闭selinux  
+
+```
+[root@vultr ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+
+[root@vultr ~]# setenforce 0
+[root@vultr ~]# sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   permissive
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+```
+
+永久关闭：  
+$ `vi /etc/selinux/config`  
+
+```
+SELINUX=disabled
+```
+
+[stackoverflow][selinux1]  
+[官网解决方式][selinux2]  
+[How to Disable SELinux Temporarily or Permanently][selinux3]  
+[Disable SELinux on CentOS 7][selinux4]  
+[Disable SELinux on CentOS 7 / RHEL 7 / Fedora Linux][selinux5]    
+[How to troubleshoot SELinux problems][selinux6]  
+
+[selinux1]: https://stackoverflow.com/a/39979854/13907069
+[selinux2]: https://www.nginx.com/blog/using-nginx-plus-with-selinux/
+[selinux3]: https://www.tecmint.com/disable-selinux-in-centos-rhel-fedora/
+[selinux4]: https://linuxize.com/post/how-to-disable-selinux-on-centos-7/
+[selinux5]: https://www.cyberciti.biz/faq/disable-selinux-on-centos-7-rhel-7-fedora-linux/
+[selinux6]: http://thedumbterminal.co.uk/posts/2010/07/how_to_troubleshoot_selinux_problems.html
+
 
 
 ## Python3.7 安装
+
+[python3安装参考1][py1]  
+[python3安装参考2][py2]
+
+[py1]: https://tecadmin.net/install-python-3-7-on-centos/
+[py2]: https://www.centos.bz/2018/01/%E5%9C%A8centos%E4%B8%8A%E5%AE%89%E8%A3%85python3%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95/
+
 $ `sudo yum install yum-utils`  
 $ `sudo yum-builddep python`  
 $ `wget https://www.python.org/ftp/python/3.7.8/Python-3.7.8.tgz`  
@@ -99,8 +208,8 @@ $ `tar xzf Python-3.7.8.tgz`
 $ `./configure --enable-optimizations`  
 $ `make`
 
-Fatal Python error: _PySys_BeginInit: can't initialize sys module  
-出错： 可能OS版本太老，无法实现优化
+*Fatal Python error: _PySys_BeginInit: can't initialize sys module  
+出错： 可能OS版本太老，无法实现优化*
 
 $ `./configure`  
 $ `make clean`  
@@ -119,13 +228,15 @@ $ `chmod +x app.py`
 $ `./app.py`  # 启动测试 需配置#!/usr/bin/env python3
 
 
+
 ## Supervisor安装
+
 $ `pip3 install supervisor`  
 $ `echo_supervisord_conf > /etc/supervisord.conf`  
 $ `mkdir -p /etc/supervisord.d/conf`  
 $ `mkdir -p /var/log/supervisor/`  
 $ `mkdir -p /var/run/supervisor/`  
-$ `echo 'files = supervisord.d/conf/*.conf' >> /etc/supervisor.conf` # [include]前面的注释要去掉  
+$ `echo 'files = supervisord.d/conf/*.conf' >> /etc/supervisord.conf` # [include]前面的注释要去掉  
 
 修改以下默认地址`/var/run/supervisor/supervisor.sock`, `/var/log/supervisor/supervisor.log`, `/var/run/supervisor.pid`
 
@@ -172,6 +283,30 @@ $ `useradd wwwdata`
 $ `supervisorctl reload`  
 $ `supervisorctl start awesome`  
 
+### supervisor启动报错
+某一次发现supervisor启动错误  
+$ `systemctl status supervisord`
+
+```
+2 16:50:59 vultr.guest systemd[1]: supervisord.service: control process exited, code=exited status=2
+Aug 22 16:50:59 vultr.guest systemd[1]: Failed to start Supervisor daemon.
+Aug 22 16:50:59 vultr.guest systemd[1]: Unit supervisord.service entered failed state.
+Aug 22 16:50:59 vultr.guest systemd[1]: supervisord.service failed
+```
+使用`systemctl start supervisord`尝试启动后，会出现错误提示，提示使用命令`journalctl -xe`查看具体信息  
+$ `journalctl -xe`，可以看到如下信息 
+
+```
+Aug 22 16:54:42 vultr.guest supervisord[1659]: Error: Cannot open an HTTP server: socket.error reported errno.ENOENT (2)
+Aug 22 16:54:42 vultr.guest supervisord[1659]: For help, use /usr/local/bin/supervisord -h
+Aug 22 16:54:42 vultr.guest systemd[1]: supervisord.service: control process exited, code=exited status=2
+Aug 22 16:54:42 vultr.guest systemd[1]: Failed to start Supervisor daemon.
+```
+搜索找到[原因][socket error]，是由于`/var/run/supervisor/`文件夹不存在（不知道怎么没了），解决后成功启动。
+
+[socket error]: https://www.peterbe.com/plog/strange-socket-related-error-with-supervisord "Strange socket related error with supervisord"
+
+
 
 ## MySQL5.7安装
 
@@ -202,7 +337,7 @@ $ `sudo yum --disablerepo=\* --enablerepo='mysql*-community*' list available`	# 
 $ `sudo yum install package-name`  
 
 ### 配置数据库
-$`vi /etc/my.cnf`
+$ `vi /etc/my.cnf`
 ```
 [mysqld]
 datadir=/var/lib/mysql
@@ -237,7 +372,7 @@ connect_timeout=2
 $ `systemctl restart mysqld`
 
 ### 创建数据库，恢复数据
-$ `source /srv/awesome/www/schema.sql;`
+$ `source /srv/awesome/www/schema.sql;`  #登录mysql后操作  
 $ `mysql -uroot -p awesome < /srv/awesome/backup/awesome_back_20200807.sql`
 
 ### 修改config_server.py
