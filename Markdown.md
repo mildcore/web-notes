@@ -211,7 +211,7 @@ _   underscore
 
 只会转义必要的部分  
 &copy;  源码： `&copy;` &不会被转义  
-AT&T 源码： `AT&T` &会被转义成&amp;
+AT&T 源码： `AT&T` &会被转义成`&amp;`
 
 当然如果在code块或span里，都会转义
 

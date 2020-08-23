@@ -51,7 +51,7 @@ $ `vi /etc/ssh/sshd_config`
 passwordAuthentication no
 ```
 $ `service sshd restart` 或 `systemctl restart sshd.service`重启sshd  
-$ `systemctl restart status sshd`查看状态  
+$ `systemctl status sshd`查看状态  
 
 后面再登录看就很干净了
 ```
