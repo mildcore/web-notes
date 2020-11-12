@@ -449,6 +449,7 @@ server {
 $ `mkdir -p /var/www/letsencrypt`  
 $ `nginx -s reload`  
 $ `certbot -c /etc/letsencrypt/config/example.com.conf certonly`  
+
 ```
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
@@ -550,10 +551,11 @@ $ `nginx -s reload`
 ### 自动更新证书
 #### 1.crontab (centos, ubuntu)
 $ `crontab -e`  
-`0 1 * * * /usr/bin/certbot renew --quiet` # 每天1:00运行
+`0 1 * * * /usr/bin/certbot renew --quiet` # 每天1:00运行  
+`0 13 13 * * nginx -s reload` # 需要重启nginx，证书才生效
 $ `crontab -l`  
 
-#### 2.systemd
+#### 2.systemd，暂未使用
 
 $ `vi /etc/systemd/system/letsencrypt.service`  
 ```
