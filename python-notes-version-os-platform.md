@@ -108,7 +108,7 @@ Model           : Raspberry Pi Compute Module 4 Rev 1.0
 2. struct.calcsize('P') * 8
 
 ### 平台位数（或可以看作python位数）
-1. pf.architecture()  # 平台位数
+1. pf.architecture()  # 架构位数，可执行文件的链接格式。
 ```
 ('64bit', 'WindowsPE')
 ('32bit', 'WindowsPE')
