@@ -745,7 +745,7 @@ $ `crontab -l`查看
    
 查看系统邮件发现cron给系统发了邮件报告错误：
     - /bin/sh: nginx: command not found, 说明nginx路径需手动指定/usr/sbin/nginx
-    - Cert not yet due for renewal， 说明certbot renew更新证书有时间要求
+    - Cert not yet due for renewal， 说明certbot renew更新证书有时间要求，查看[官方文档](https://eff-certbot.readthedocs.io/en/stable/using.html#renewing-certificates)发现是离到期30天内
 
 2. 测试配置，应该可以自动更新证书并重新加载到nginx，有待观测
 ```
