@@ -477,7 +477,7 @@ $ sudo mv isrgrootx1.pem root.pem
 $ sudo cat root.pem chain.pem > root_ca_cert_plus_intermediates
 ```
 
-nginx 配置ssl后的完整文件
+#### nginx 配置ssl后的完整文件
 ```
 # /etc/nginx/conf.d/awesome.conf
 # nginx conf for awesome
@@ -547,6 +547,118 @@ server {
 }
 ```
 $ `nginx -s reload`  
+
+#### nginx配置ssl优化（awesome.conf）
+
+这个配置下，只允许对特定主机地址的访问（在此设置里不允许直接通过ip访问或者其他域名地址访问）。
+并且将所有的http, https都重定向到固定的https://www.example.com （主要是example.com会重定向到www.example.com，并且http会变成https）
+
+1. 将ssl证书相关配置放到文件开头，即全局位置
+1. 第一段server配置，默认拒绝所有http/https的访问，返回444
+2. 第二段server配置，允许对以下地址的http访问并重定向，www.example.com example.com 127.0.0.1
+3. 第三段server配置，允许对以下地址的https访问并重定向，example.com
+4. 第四段server配置，统一的访问终点https://www.example.com
+```
+[root@vultr ~]# vi /etc/nginx/conf.d/awesome.conf
+# /etc/nginx/conf.d/awesome.conf
+# nginx conf for awesome
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
+    ssl_session_tickets off;
+
+    # curl https://ssl-config.mozilla.org/ffdhe2048.txt > /path/to/dhparam
+    ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+
+    # intermediate configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+
+    # HSTS (ngx_http_headers_module is required) (63072000 seconds)
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    # OCSP stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    # verify chain of trust of OCSP response using Root CA and Intermediate certs
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+
+    # replace with the IP address of your resolver
+    resolver 173.199.96.96 173.199.96.97;
+
+
+#server {
+#    listen 80 default_server;
+#    listen [::]:80 default_server;
+#
+#    return 301 https://$host$request_uri;
+#}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    listen 443 ssl default_server;
+    listen [::]:443 default_server;
+    server_name _;
+
+    return 444;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name www.example.com example.com 127.0.0.1;
+
+    return 301 https://www.example.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name example.com;
+
+    return 301 https://www.example.com$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name www.example.com;
+
+#    if ($host != $server_name) {
+#        return 301 https://www.example.com$request_uri;
+#    }
+
+    root        /srv/awesome/www;
+    access_log  /srv/awesome/log/access.log;
+    error_log   /srv/awesome/log/error.log;
+
+    #location = / {
+    #    proxy_pass      http://127.0.0.1:9000;
+    #}
+
+    location ^~ /.well-known/acme-challenge/ {
+        default_type "text/plain";
+        root /var/www/letsencrypt;
+    }
+
+    location ^~ /static/ {
+        root    /srv/awesome/www;
+    }
+
+    location / {
+        proxy_pass      http://127.0.0.1:9000;
+        proxy_set_header Host $Host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+```
 
 ### 自动更新证书
 #### 1.crontab (centos, ubuntu)
