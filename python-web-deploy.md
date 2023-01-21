@@ -548,7 +548,30 @@ server {
 ```
 $ `nginx -s reload`  
 
-#### nginx配置ssl优化（awesome.conf）
+### 更改域名
+1.新域名下DNS配置，www.new.com, new.com指向本服务器IP
+  - A记录， @， <ip addr>
+  - A记录，www, <ip addr> 或CNAME记录，www, new.com
+
+2.申请新证书
+    - vi /etc/letsencrypt/cofnig/new.conf.conf
+    ```
+    domains = example.com
+    rsa-key-size = 2048
+    email = your-email@example.com
+    text = True
+    # webroot with nginx, static file path should be configured in nginx.
+    authenticator = webroot
+    webroot-path = /var/www/letsencrypt
+    ```
+    - `certbot -c /etc/letsencrypt/config/example.com.conf certonly` 
+
+3.更改nginx配置文件awesome.conf中的域名地址（包括以域名命名的文件等等）
+    
+4.重新启动nginx
+  - `nginx -s reload`
+
+### nginx配置ssl优化-awesome.conf
 
 这个配置下，只允许对特定主机地址的访问（在此设置里不允许直接通过ip访问或者其他域名地址访问）。
 并且将所有的http, https都重定向到固定的https://www.example.com （主要是example.com会重定向到www.example.com，并且http会变成https）
