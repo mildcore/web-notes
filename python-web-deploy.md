@@ -391,9 +391,59 @@ $ `mysql -uroot -p awesome < /srv/awesome/backup/awesome_back_20200807.sql`
 [ssl2]: https://moxo.io/blog/2018/01/30/obtain-and-renew-tls-certs-using-letsencrypt/
 [ssl3]: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-centos-7
 
-### 安装cerbot
+### 安装certbot
 $ `yum install epel-release`  
 $ `yum install certbot`  
+
+### 常用certbot命令
+#### certbot certonly
+```
+# 查看certonly的详细帮助
+certbot -h certonly
+
+# create cert but not install, 可以在末尾加上`--dryrun`仅运行测试
+certbot certonly --webroot -w /var/www/letsencrypt -d example.com,www.example.com -m
+
+# create cert from configfile
+certbot certonly -c /etc/letsencrypt/example.com.conf
+
+# domain and email
+domains = example.com
+rsa-key-size = 2048
+email = your-email@example.com
+text = True
+
+# webroot
+authenticator = webroot
+webroot-path = /var/www/letsencrypt
+```
+
+#### show and delete
+```
+# show certs
+certbot certificates
+
+# delete cert
+certbot delete --cert-name example.com
+```
+
+#### renew
+```
+# 查看renew的详细帮助
+certbot -h renew
+
+# test: renew all certs, it is only a test, not producing files actually.
+certbot renew --dry-run
+
+# renw all certs
+certbot renew
+
+# renw all certs in quiet (for crontab)
+certbot renew -q
+
+# renew and execute post-scripts
+certbot renew -q --post-hook "nginx -s reload"
+```
 
 ### 生成证书
 $ `mkdir /etc/letsencrypt/configs`  
@@ -549,26 +599,26 @@ server {
 $ `nginx -s reload`  
 
 ### 更改域名
-1.新域名下DNS配置，www.new.com, new.com指向本服务器IP
+1. 新域名下DNS配置，www.new.com, new.com指向本服务器IP
   - A记录， @， <ip addr>
   - A记录，www, <ip addr> 或CNAME记录，www, new.com
 
-2.申请新证书
+2. 申请新证书
     - vi /etc/letsencrypt/cofnig/new.conf.conf
-    ```
-    domains = example.com
-    rsa-key-size = 2048
-    email = your-email@example.com
-    text = True
-    # webroot with nginx, static file path should be configured in nginx.
-    authenticator = webroot
-    webroot-path = /var/www/letsencrypt
-    ```
+```
+domains = example.com
+rsa-key-size = 2048
+email = your-email@example.com
+text = True
+# webroot with nginx, static file path should be configured in nginx.
+authenticator = webroot
+webroot-path = /var/www/letsencrypt
+```
     - `certbot -c /etc/letsencrypt/config/example.com.conf certonly` 
 
-3.更改nginx配置文件awesome.conf中的域名地址（包括以域名命名的文件等等）
+3. 更改nginx配置文件awesome.conf中的域名地址（包括以域名命名的文件等等）
     
-4.重新启动nginx
+4. 重新启动nginx
   - `nginx -s reload`
 
 ### nginx配置ssl优化-awesome.conf
@@ -685,10 +735,55 @@ server {
 
 ### 自动更新证书
 #### 1.crontab (centos, ubuntu)
-$ `crontab -e`  
+[crontab guru](https://crontab.guru/#00_00_*_*_*)
+    
+1. 失败配置，问题在于nginx重启失败：
+$ `crontab -e`编辑 
 `0 1 * * * /usr/bin/certbot renew --quiet` # 每天1:00运行  
 `0 13 13 * * nginx -s reload` # 需要重启nginx，证书才生效
-$ `crontab -l`  
+$ `crontab -l`查看
+   
+查看系统邮件发现cron给系统发了邮件报告错误：
+    - /bin/sh: nginx: command not found, 说明nginx路径需手动指定/usr/sbin/nginx
+    - Cert not yet due for renewal， 说明certbot renew更新证书有时间要求
+
+2. 测试配置，应该可以自动更新证书并重新加载到nginx，有待观测
+```
+[root@vultr ~]# crontab -e
+01 00 * * * date >> /root/renew.log;certbot renew --post-hook "/usr/sbin/nginx -s reload" >> /root/renew.log
+00 00 1 1-12/6 * echo >renew.log
+````
+    
+#### 扩展内容-cron执行错误会有系统邮件
+[您在/var/spool/mail/o2o_mq中有新邮件 - 简书](https://www.jianshu.com/p/0f808060ea87)
+```
+# yum install mailx
+# mail
+    
+mail常用命令   
+# 阅读当前指针指向的邮件
+& 直接回车
+# 阅读第7封邮件，阅读时，按空格键就是翻页，按回车键就是下移一行
+& t 7
+# 阅读第7封、第9封邮件
+& t 7 9
+# 阅读指定范围序号内的所有邮件
+& t 11-20
+# 第10封邮件
+& d 10
+# 删除第7封、第9封邮件
+& d 7 9
+# 删除第10-100封信息
+& d 10-100
+# 显示当前指针所在的邮件的邮件头
+& top
+# 显示系统邮件所在的文件，以及邮件总数等信息
+& file
+# 退出mail命令平台，并不保存之前的操作，比如删除邮件
+& x
+# 退出mail命令平台,保存之前的操作，比如已用`d`删除的邮件
+& q    
+``` 
 
 #### 2.systemd，暂未使用
 
