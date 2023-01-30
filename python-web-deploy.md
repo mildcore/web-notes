@@ -604,17 +604,17 @@ $ `nginx -s reload`
   - A记录，www, <ip addr> 或CNAME记录，www, new.com
 
 2. 申请新证书
-    - vi /etc/letsencrypt/cofnig/new.conf.conf
+    - vi /etc/letsencrypt/config/new.com.conf
 ```
-domains = example.com
+domains = new.com, www.new.com
 rsa-key-size = 2048
-email = your-email@example.com
+email = <email_address>
 text = True
 # webroot with nginx, static file path should be configured in nginx.
 authenticator = webroot
 webroot-path = /var/www/letsencrypt
 ```
-    - `certbot -c /etc/letsencrypt/config/example.com.conf certonly` 
+    - `certbot -c /etc/letsencrypt/config/new.com.conf certonly` 
 
 3. 更改nginx配置文件awesome.conf中的域名地址（包括以域名命名的文件等等）
     
@@ -747,7 +747,11 @@ $ `crontab -l`查看
     - /bin/sh: nginx: command not found, 说明nginx路径需手动指定/usr/sbin/nginx
     - Cert not yet due for renewal， 说明certbot renew更新证书有时间要求，查看[官方文档](https://eff-certbot.readthedocs.io/en/stable/using.html#renewing-certificates)发现是离到期30天内
 
-2. 测试配置，应该可以自动更新证书并重新加载到nginx，有待观测
+2. 测试配置，应该可以自动更新证书并重新加载到nginx
+    - 每天00：01分尝试更新证书，如果更新成功则重启nginx，执行记录保存到/root/renew.log
+    - 1-12月的每隔6个月的1号00：00清空日志renew.log（即1月1号和7月1号的零时）
+    
+观测结果：发现证书有效期在30天内后，得到了正常更新。
 ```
 [root@vultr ~]# crontab -e
 01 00 * * * date >> /root/renew.log;certbot renew --post-hook "/usr/sbin/nginx -s reload" >> /root/renew.log
