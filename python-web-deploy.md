@@ -737,21 +737,21 @@ server {
 #### 1.crontab (centos, ubuntu)
 [crontab guru](https://crontab.guru/#00_00_*_*_*)
     
-1. 失败配置，问题在于nginx重启失败：
-$ `crontab -e`编辑 
+1. 失败配置，问题在于nginx重启失败：  
+$ `crontab -e`编辑   
 `0 1 * * * /usr/bin/certbot renew --quiet` # 每天1:00运行  
 `0 13 13 * * nginx -s reload` # 需要重启nginx，证书才生效
-$ `crontab -l`查看
+$ `crontab -l`查看  
    
 查看系统邮件发现cron给系统发了邮件报告错误：
     - /bin/sh: nginx: command not found, 说明nginx路径需手动指定/usr/sbin/nginx
     - Cert not yet due for renewal， 说明certbot renew更新证书有时间要求，查看[官方文档](https://eff-certbot.readthedocs.io/en/stable/using.html#renewing-certificates)发现是离到期30天内
 
-2. 测试配置，应该可以自动更新证书并重新加载到nginx
+2. 测试配置，应该可以自动更新证书并重新加载到nginx  
     - 每天00：01分尝试更新证书，如果更新成功则重启nginx，执行记录保存到/root/renew.log
     - 1-12月的每隔6个月的1号00：00清空日志renew.log（即1月1号和7月1号的零时）
     
-观测结果：发现证书有效期在30天内后，得到了正常更新。
+观测结果：发现证书有效期在30天内后，得到了正常更新。  
 ```
 [root@vultr ~]# crontab -e
 01 00 * * * date >> /root/renew.log;certbot renew --post-hook "/usr/sbin/nginx -s reload" >> /root/renew.log
